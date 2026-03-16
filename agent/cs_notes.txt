@@ -1,0 +1,5 @@
+Recursion is a technique where a function calls itself to solve smaller subproblems.
+Big O notation describes the time and space complexity of algorithms.
+A binary search tree allows O(log n) lookups by keeping data sorted hierarchically.
+Dynamic programming solves complex problems by breaking them into overlapping subproblems.
+Hash maps provide O(1) average lookup time using a hash function to index keys.
