@@ -1,5 +1,0 @@
-Luis is a software developer based in Los Angeles who loves hiking on weekends.
-He prefers concise explanations with code examples over long theoretical discussions.
-His favorite programming languages are Python and JavaScript.
-He is currently working on an AI-powered project for a hackathon.
-Luis drinks too much coffee and usually codes late at night.
