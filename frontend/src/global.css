@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Variables ── */
+:root {
+  --bg:           #0d0d0d;
+  --bg-surface:   #141414;
+  --bg-deep:      #0a0a0a;
+  --bg-item:      #111111;
+  --border:       #1a1a1a;
+  --border-mid:   #222222;
+  --border-muted: #333333;
+
+  --text-primary:   #e8e8e2;
+  --text-secondary: #cccccc;
+  --text-muted:     #666666;
+  --text-faint:     #555555;
+
+  --accent:       #4a9eff;
+  --accent-bg:    #0d1f33;
+  --accent-border:#1a3a5c;
+
+  --green:        #7ddb8c;
+  --json-color:   #5a9e6f;
+
+  --user-bubble-bg:     #1a1a2e;
+  --user-bubble-border: #2a2a4a;
+  --user-bubble-text:   #c8d8f0;
+
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+/* ── Typography ── */
+.mono { font-family: var(--font-mono); }
+.text-muted { color: var(--text-muted); }
+.text-faint { color: var(--text-faint); }
+.text-accent { color: var(--accent); }
+.text-green  { color: var(--green); }
+
+/* ── Layout ── */
+.screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Buttons ── */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+.btn-icon:hover { color: var(--text-primary); }
+
+.btn-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.btn-send:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--text-faint);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: color 0.15s;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--text-primary); }
+.tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+
+/* ── Cards / Items ── */
+.surface-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-item);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* ── Badge ── */
+.badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+.badge-accent {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+}
+
+/* ── Drop zone ── */
+.drop-zone {
+  border: 1px dashed var(--border-muted);
+  border-radius: var(--radius-md);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.drop-zone:hover,
+.drop-zone.dragging {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* ── JSON view ── */
+.json-block {
+  font-size: 11px;
+  color: var(--json-color);
+  font-family: var(--font-mono);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ── Typing dots ── */
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40%           { opacity: 1;   transform: scale(1); }
+}
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #444;
+  animation: blink 1.4s infinite ease-in-out;
+}
