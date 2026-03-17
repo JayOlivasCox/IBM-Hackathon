@@ -15,13 +15,13 @@ const CLASSES = {
 const SEMESTERS = ["Fall", "Spring", "Summer"];
 const YEARS     = ["2023", "2024", "2025", "2026"];
 
-const AGENTS = [
-  { id: "agent_cs50_v3", name: "CS50x Agent",    version: 3, score: "A+", forks: 7, author: "noah-fall-25" },
-  { id: "agent_cs50_v2", name: "CS50x Agent",    version: 2, score: "B+", forks: 4,  author: "alex-winter-23" },
-  { id: "agent_cs50_v1", name: "CS50x Agent",    version: 1, score: "C+", forks: 1,  author: "sara-summer-24" },
-  { id: "agent_cs51_v1", name: "CS51 Agent",     version: 1, score: "B", forks: 2,  author: "marco-spring-22" },
-  { id: "agent_cs61_v2", name: "CS61 Agent",     version: 2, score: "D-", forks: 0,  author: "andrew-fall-23" },
-  { id: "agent_cs61_v1", name: "CS61 Agent",     version: 1, score: "A", forks: 3,  author: "lisa-fall-23" },
+const INITIAL_AGENTS = [
+  { id: "agent_cs50_v3", name: "CS50x Agent", version: 3, score: "A+", forks: 12, author: "noah-fall-25", course: "CS50x", semester: "Spring", year: "2025", description: "Strong on pointers and memory management. Trained on 3 sets of lecture notes plus 2 problem set walkthroughs." },
+  { id: "agent_cs50_v2", name: "CS50x Agent", version: 2, score: "B+", forks: 8,  author: "alex-winter-23", course: "CS50x", semester: "Spring", year: "2025", description: "Covers weeks 1–6. Good on C basics, weaker on SQL." },
+  { id: "agent_cs50_v1", name: "CS50x Agent", version: 1, score: "C+", forks: 3,  author: "marco-spring-22", course: "CS50x", semester: "Fall",   year: "2024", description: "First pass. Lecture notes only, no student materials." },
+  { id: "agent_cs51_v1", name: "CS51 Agent",  version: 1, score: "B",  forks: 5,  author: "sara-summer-24", course: "CS51",  semester: "Spring", year: "2025", description: "Covers abstraction and design in OCaml. Well rated on clarity." },
+  { id: "agent_cs61_v2", name: "CS61 Agent",  version: 2, score: "D-", forks: 9,  author: "andrew-fall-23", course: "CS61",  semester: "Fall",   year: "2024", description: "Systems programming. Strong on processes and memory." },
+  { id: "agent_cs61_v1", name: "CS61 Agent",  version: 1, score: "A",  forks: 1,  author: "lisa-fall-23", course: "CS61",  semester: "Fall",   year: "2024", description: "Initial version, limited training data." },
 ];
 
 function scoreColor(score) {
@@ -30,6 +30,11 @@ function scoreColor(score) {
   return "#e05555";
 }
 
+function barColor(val) {
+  if (val >= 80) return "var(--green)";
+  if (val >= 65) return "#f0c040";
+  return "#e05555";
+}
 
 /* ── Add Agent Modal ── */
 function AddModal({ onClose, onCreate }) {
@@ -140,7 +145,7 @@ function SummaryPanel({ agent, onClose, onOpen }) {
         {/* Score */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 20 }}>
           <span className="mono" style={{ fontSize: 36, fontWeight: 500, color: scoreColor(agent.score) }}>{agent.score}</span>
-          <span className="mono text-faint" style={{ fontSize: 12 }}>/100</span>
+          <span className="mono text-faint" style={{ fontSize: 12 }}>/grade</span>
         </div>
 
         {/* Category bars */}
@@ -149,16 +154,16 @@ function SummaryPanel({ agent, onClose, onOpen }) {
             <div key={key}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                 <span className="mono text-faint" style={{ fontSize: 10 }}>{key}</span>
-                <span className="mono" style={{ fontSize: 10, color: scoreColor(val) }}>{val}</span>
+                <span className="mono" style={{ fontSize: 10, color: barColor(val) }}>{val}</span>
               </div>
               <div style={{ height: 3, background: "var(--border-mid)", borderRadius: 2 }}>
-                <div style={{ height: "100%", width: `${val}%`, background: scoreColor(val), borderRadius: 2, transition: "width 0.4s ease" }} />
+                <div style={{ height: "100%", width: `${val}%`, background: barColor(val), borderRadius: 2, transition: "width 0.4s ease" }} />
               </div>
             </div>
           ))}
         </div>
 
-        <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 24 }}>
+        <p style={{ fontSize: 16, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 24 }}>
           {agent.description}
         </p>
 
