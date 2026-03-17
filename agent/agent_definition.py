@@ -57,7 +57,7 @@ class PersonalAgent(BaseModel):
         key   = the label for the data (e.g. "favorite_language")
         value = the data itself (e.g. "Python")
         """
-        self.memory_store.add(entry)  # all the chunking/embedding happens in here
+        # all the chunking/embedding happens in here
         return "✓ Entry added."
 
     def gather_relevant_info(self, topic: str) -> dict:
@@ -65,7 +65,8 @@ class PersonalAgent(BaseModel):
         Returns only the requested keys from the knowledge base.
         Pass a list of keys you want pulled, e.g. ["name", "projects"]
         """
-        return self.memory_store.search(topic)
+        # do the searching here
+        return 
 
     def generate_knowledge_base_file(self, output_path: str) -> str:
         """
