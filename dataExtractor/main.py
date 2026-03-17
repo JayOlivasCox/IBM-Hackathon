@@ -116,6 +116,7 @@ Rules:
 - If the student says "I don't know" or asks for the answer, then you can reveal it
 - Keep responses concise and encouraging
 - If the answer is not in the context, say so
+- If the student asks for five questions, give them all the questions at once, and similarly for any amount of questions.
 
 Context:
 {context}
