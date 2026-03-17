@@ -135,7 +135,6 @@ function SummaryPanel({ agent, onClose, onOpen }) {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <span style={{ fontSize: 18, fontWeight: 500, color: "var(--text-primary)" }}>{agent.name}</span>
-              <span className="badge badge-accent">v{agent.version}</span>
             </div>
             <span className="mono text-faint" style={{ fontSize: 11 }}>{agent.author} · {agent.semester} {agent.year}</span>
           </div>
@@ -258,7 +257,6 @@ export default function AgentSelectScreen() {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                <span className="badge badge-accent" style={{ fontSize: 10 }}>v{agent.version}</span>
                 <span className="mono" style={{ fontSize: 18, fontWeight: 500, color: agent.score ? scoreColor(agent.score) : "var(--text-faint)" }}>
                   {agent.score ?? "—"}
                 </span>
