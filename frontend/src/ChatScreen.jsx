@@ -13,7 +13,7 @@ const mockMessages = [
 ];
 
 const mockSources = [
-  { id: 1, name: "CS50 Week 1 Lecture.pdf", type: "pdf",   size: "2.4 MB" },
+  { id: 1, name: "CS50 Week 6 Lecture.pdf", type: "pdf",   size: "2.4 MB" },
   { id: 2, name: "My Notes - Arrays.jpg",   type: "image", size: "840 KB" },
 ];
 
@@ -205,7 +205,7 @@ export default function ChatScreen() {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <span style={{ fontSize: 22, color: "var(--text-muted)", lineHeight: 1 }}>+</span>
-                <span className="mono text-faint" style={{ fontSize: 11 }}>drop pdf or image</span>
+                <span className="mono text-faint" style={{ fontSize: 11 }}>Drop a file</span>
                 <input ref={fileInputRef} type="file" accept=".pdf,image/jpeg,image/png,image/webp" multiple style={{ display: "none" }} onChange={(e) => handleFiles(e.target.files)} />
               </div>
 
