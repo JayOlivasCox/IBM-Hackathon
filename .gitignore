@@ -3,3 +3,9 @@
 venv/
 __pycache__/
 *.pyc
+dataExtractor/text.txt
+.gitignore
+dataExtractor/sample.pdf
+.gitignore
+dataExtractor/sample.jpg
+.DS_Store
