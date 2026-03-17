@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile
-from pipeline import ingest
+from dataExtractor.pipeline import ingest
 import shutil
 import os
 

@@ -1,7 +1,7 @@
 from pathlib import Path
-from extractors import extract_any
-from chunker import chunk_text
-from embedder import embed_chunks
+from dataExtractor.extractors import extract_any
+from dataExtractor.chunker import chunk_text
+from dataExtractor.embedder import embed_chunks
 import json
 import os
 

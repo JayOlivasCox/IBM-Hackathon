@@ -1,8 +1,10 @@
 import anthropic
 from dotenv import load_dotenv
-from agent_definition import PersonalAgent
+from agent.agent_definition import PersonalAgent
+from dataExtractor.pipeline import *
 load_dotenv()
 
+#ingest("some.pdf")
 
 
 agent_luis = PersonalAgent(
@@ -11,4 +13,7 @@ agent_luis = PersonalAgent(
     memory_path="luis_memory.json"
 )
 
+agent_luis.information_update("vectors.json")
 
+
+print(agent_luis.chat_with_context("Can you make me a 10 question quiz for the given PDF?"))
