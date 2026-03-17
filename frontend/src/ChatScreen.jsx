@@ -17,10 +17,10 @@ const mockSources = [
 ];
 
 const mockAgentData = {
-  id: "agent_cs50_v3",
+  id: "agent_cs50_noah-fall-25",
   course: "CS50x",
-  version: 3,
-  score: 87,
+  version: "noah-fall-25",
+  score: "A+",
   forks: 12,
   created: "2025-03-10",
   base_agent: "agent_cs50_v2",
@@ -95,11 +95,11 @@ export default function ChatScreen() {
             ← agents
           </a>
           <span style={{ fontSize: 15, fontWeight: 500 }} className="mono">CS50x</span>
-          <span className="badge badge-accent">v3</span>
+          <span className="badge badge-accent">noah-fall-25</span>
         </div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
           <span className="mono text-faint" style={{ fontSize: 11 }}>score</span>
-          <span className="mono text-green" style={{ fontSize: 20, fontWeight: 500 }}>87</span>
+          <span className="mono text-green" style={{ fontSize: 20, fontWeight: 500 }}> A+ </span>
         </div>
       </div>
 
