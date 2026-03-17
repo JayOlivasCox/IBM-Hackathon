@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./global.css";
+import ReactMarkdown from "react-markdown"
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -34,6 +35,9 @@ export default function ChatScreen() {
   const [sources, setSources]       = useState(mockSources);
   const [sidebarTab, setSidebarTab] = useState("sources");
   const [dragging, setDragging]     = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [noteName, setNoteName]       = useState("");
+  const [showModal, setShowModal]     = useState(false);
 
   const bottomRef    = useRef(null);
   const fileInputRef = useRef(null);
@@ -72,17 +76,42 @@ export default function ChatScreen() {
   };
 
   const handleFiles = (files) => {
-    Array.from(files).forEach((file) => {
-      const allowed = ["application/pdf", "image/jpeg", "image/png"];
-      if (!allowed.includes(file.type)) return;
-      setSources((prev) => [...prev, {
-        id: Date.now() + Math.random(),
-        name: file.name,
-        type: file.type === "application/pdf" ? "pdf" : "image",
-        size: `${(file.size / 1024).toFixed(0)} KB`,
-      }]);
-      // TODO: POST file to backend /upload
-    });
+    const file = Array.from(files)[0];
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) return;
+    setPendingFile(file);
+    setNoteName(file.name);
+    setShowModal(true);
+  };
+
+  const confirmUpload = async () => {
+    if (!pendingFile) return;
+    setShowModal(false);
+
+    setSources((prev) => [...prev, {
+      id: Date.now() + Math.random(),
+      name: noteName,
+      type: pendingFile.type === "application/pdf" ? "pdf" : "image",
+      size: `${(pendingFile.size / 1024).toFixed(0)} KB`,
+    }]);
+
+    const formData = new FormData();
+    formData.append("file", pendingFile);
+    formData.append("note_name", noteName);
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      console.log(`✅ Uploaded ${noteName} → ${data.chunks} chunks`);
+    } catch (err) {
+      console.error(`❌ Upload failed:`, err);
+    }
+
+    setPendingFile(null);
+    setNoteName("");
   };
 
   return (
@@ -124,8 +153,9 @@ export default function ChatScreen() {
                   background:   msg.role === "user" ? "var(--user-bubble-bg)"    : "var(--bg-surface)",
                   border:       msg.role === "user" ? "1px solid var(--user-bubble-border)" : "1px solid var(--border-mid)",
                   color:        msg.role === "user" ? "var(--user-bubble-text)"  : "var(--text-primary)",
+                  textAlign: "left",  // add this
                 }}>
-                  {msg.content}
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               </div>
             ))}
@@ -161,11 +191,7 @@ export default function ChatScreen() {
         <div style={{ width: 280, display: "flex", flexDirection: "column", background: "var(--bg-deep)", flexShrink: 0 }}>
 
           <div className="tabs">
-            {["sources", "data"].map((tab) => (
-              <button key={tab} className={`tab ${sidebarTab === tab ? "active" : ""}`} onClick={() => setSidebarTab(tab)}>
-                {tab}
-              </button>
-            ))}
+            <button className="tab active">sources</button>
           </div>
 
           <div style={{ flex: 1, overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -180,7 +206,7 @@ export default function ChatScreen() {
               >
                 <span style={{ fontSize: 22, color: "var(--text-muted)", lineHeight: 1 }}>+</span>
                 <span className="mono text-faint" style={{ fontSize: 11 }}>drop pdf or image</span>
-                <input ref={fileInputRef} type="file" accept=".pdf,image/jpeg,image/png" multiple style={{ display: "none" }} onChange={(e) => handleFiles(e.target.files)} />
+                <input ref={fileInputRef} type="file" accept=".pdf,image/jpeg,image/png,image/webp" multiple style={{ display: "none" }} onChange={(e) => handleFiles(e.target.files)} />
               </div>
 
               {sources.map((src) => (
@@ -201,6 +227,58 @@ export default function ChatScreen() {
           </div>
         </div>
       </div>
+
+      {/* ── Modal ── */}
+      {showModal && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100
+        }}>
+          <div style={{
+            background: "var(--bg-surface)", border: "1px solid var(--border-mid)",
+            borderRadius: 12, padding: 24, width: 320, display: "flex",
+            flexDirection: "column", gap: 16
+          }}>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)" }}>
+              Name your notes
+            </span>
+            <input
+              style={{
+                background: "var(--bg)", border: "1px solid var(--border-mid)",
+                borderRadius: 8, padding: "10px 14px", color: "var(--text-primary)",
+                fontSize: 14, outline: "none"
+              }}
+              value={noteName}
+              onChange={(e) => setNoteName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && confirmUpload()}
+              placeholder="e.g. Week 3 - Pointers"
+              autoFocus
+            />
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button
+                onClick={() => { setShowModal(false); setPendingFile(null); setNoteName(""); }}
+                style={{
+                  background: "transparent", border: "1px solid var(--border-mid)",
+                  borderRadius: 8, padding: "8px 16px", color: "var(--text-muted)",
+                  cursor: "pointer", fontSize: 13
+                }}>
+                Cancel
+              </button>
+              <button
+                onClick={confirmUpload}
+                disabled={!noteName.trim()}
+                style={{
+                  background: "var(--accent, #6366f1)", border: "none",
+                  borderRadius: 8, padding: "8px 16px", color: "#fff",
+                  cursor: "pointer", fontSize: 13
+                }}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
