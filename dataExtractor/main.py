@@ -1,13 +1,16 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pipeline import ingest
+from database import setup_table, save_document, load_all_documents
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import anthropic
 import numpy as np
 import shutil
 import json
+import uuid
 import os
+from datetime import datetime
 
 load_dotenv()
 
@@ -23,6 +26,9 @@ app.add_middleware(
 
 client = anthropic.Anthropic()
 model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# Set up Neon table on startup
+setup_table()
 
 
 def cosine_similarity(a, b):
@@ -49,17 +55,39 @@ def get_relevant_chunks(question: str, data: dict, top_k: int = 5) -> str:
                 "score": score
             })
 
-    # Sort by similarity score and take top_k
     scored_chunks.sort(key=lambda x: x["score"], reverse=True)
     top_chunks = scored_chunks[:top_k]
 
-    # Build context from top chunks
     context = ""
     for chunk in top_chunks:
         context += f"--- {chunk['note_name']} (relevance: {chunk['score']:.2f}) ---\n"
         context += chunk["text"] + "\n\n"
 
     return context
+
+
+def save_chat_message(role: str, content: str):
+    """Embed and save a chat message to the database."""
+    embedding = model.encode(content).tolist()
+
+    chunk = {
+        "id": str(uuid.uuid4()),
+        "text": content,
+        "embedding": embedding,
+        "chunk_index": 0,
+        "metadata": {
+            "source": "chat_history",
+            "role": role,
+            "timestamp": str(datetime.now())
+        }
+    }
+
+    save_document(
+        source="chat_history",
+        note_name="Chat History",
+        file_type="chat",
+        chunks=[chunk]
+    )
 
 
 @app.get("/health")
@@ -78,6 +106,14 @@ async def upload_file(file: UploadFile = File(...), note_name: str = Form("")):
 
     os.remove(temp_path)
 
+    # Save to Neon
+    save_document(
+        source=file.filename,
+        note_name=name,
+        file_type=os.path.splitext(file.filename)[1].lower(),
+        chunks=records
+    )
+
     return {
         "status": "success",
         "filename": file.filename,
@@ -90,13 +126,15 @@ async def upload_file(file: UploadFile = File(...), note_name: str = Form("")):
 async def chat(request: dict):
     message = request.get("message")
 
-    if not os.path.exists("vectors.json"):
+    # Load from Neon
+    data = load_all_documents()
+
+    if not data["documents"]:
         return {"response": "No documents uploaded yet. Please upload a file first."}
 
-    with open("vectors.json", "r") as f:
-        data = json.load(f)
+    # Save student message to database
+    save_chat_message("user", message)
 
-    # Use cosine similarity to find only the most relevant chunks
     context = get_relevant_chunks(message, data, top_k=5)
 
     if not context:
@@ -116,7 +154,6 @@ Rules:
 - If the student says "I don't know" or asks for the answer, then you can reveal it
 - Keep responses concise and encouraging
 - If the answer is not in the context, say so
-- If the student asks for five questions, give them all the questions at once, and similarly for any amount of questions.
 
 Context:
 {context}
@@ -125,4 +162,9 @@ Question: {message}"""
         }]
     )
 
-    return {"response": response.content[0].text}
+    ai_response = response.content[0].text
+
+    # Save AI response to database
+    save_chat_message("assistant", ai_response)
+
+    return {"response": ai_response}

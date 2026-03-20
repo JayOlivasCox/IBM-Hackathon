@@ -202,16 +202,18 @@ export default function AgentSelectScreen() {
   };
 
   return (
-    <div className="screen" style={{ overflowY: "auto" }}>
-      <div style={{ padding: "40px 48px" }}>
-
+    <div style={{ minHeight: "100vh", background: "var(--bg)", overflowY: "auto" }}>
+      <div style={{ padding: "40px 48px" }}>  
         {/* ── Header ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 40 }}>
           <div>
-            <p className="mono text-faint" style={{ fontSize: 11, marginBottom: 6 }}>institution</p>
-            <h1 style={{ fontSize: 28, fontWeight: 500, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
-              {SCHOOL}
+            <h1 style={{ fontSize: 30, fontWeight: 500, color: "var(--text-primary)", letterSpacing: "-0.02em", marginBottom: 8 }}>
+              Welcome to Grover!
             </h1>
+            <p style={{ fontSize: 14, color: "var(--text-muted)", marginBottom: 6 }}>
+              The AI study buddy hub
+            </p>
+            <p className="mono text-faint" style={{ fontSize: 11 }}>institution · {SCHOOL}</p>
           </div>
           <button onClick={() => setShowAdd(true)} style={addBtnStyle}>
             + new agent
@@ -241,8 +243,7 @@ export default function AgentSelectScreen() {
           {agents.length} agents
         </p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 14 }}>
-          {agents.map((agent) => (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 14, width: "100%" }}>          {agents.map((agent) => (
             <div
               key={agent.id}
               onClick={() => setSelected(agent)}
