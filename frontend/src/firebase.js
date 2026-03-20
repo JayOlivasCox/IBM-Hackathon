@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDm4zQB3i7h9O4Xgkmixq34ZcOxjBQFFCs",
+  apiKey: "",
   authDomain: "grover-907a6.firebaseapp.com",
   projectId: "grover-907a6",
   storageBucket: "grover-907a6.firebasestorage.app",
